@@ -1,0 +1,19 @@
+[Unit]
+Description=Proxmox LCD panel (Turing Smart Screen 3.5" USB)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/turing-smart-screen-python
+Environment=PYTHONUNBUFFERED=1
+Environment=LCD_PORT=/dev/ttyACM0
+Environment=LCD_BRIGHTNESS=80
+Environment=LCD_PERIOD_S=2.0
+# Environment=PVE_NODE=pve
+ExecStart=/opt/turing-smart-screen-python/venv/bin/python /opt/turing-smart-screen-python/proxmox_panel.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

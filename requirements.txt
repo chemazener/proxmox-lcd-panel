@@ -1,0 +1,5 @@
+# The USB LCD driver comes from turing-smart-screen-python (this script lives
+# inside a checkout of that project and imports its `library/`).
+# Install that project's requirements first, then these:
+Pillow
+evdev   # optional: enables mouse-wheel page switching
