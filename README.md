@@ -4,6 +4,8 @@ A live **Proxmox dashboard on a 3.5" USB LCD** (Turing Smart Screen, Rev A, 320Ã
 It renders every *running* VM and LXC container with real-time per-machine metrics, straight
 onto the little screen sitting next to your server â€” no browser, no touch, just glanceable status.
 
+<p align="center"><img src="docs/screenshot.jpg" alt="Proxmox LCD panel running" width="360"></p>
+
 It is a single drop-in script for the excellent
 [**turing-smart-screen-python**](https://github.com/mathoudebine/turing-smart-screen-python)
 project: it reuses that project's display driver (`library/`) and replaces the built-in themes with
