@@ -34,6 +34,8 @@ For the NVIDIA GPU it plots **utilization %, VRAM % and temperature** over a rol
 it shows *"in VM (passthrough)"* when the iGPU is bound to `vfio-pci`). Runs exactly like the main
 script — just point the service's `ExecStart` at `gpu_panel.py`. Refresh every ~1 s.
 
+<p align="center"><img src="docs/gpu-graphs.jpg" alt="The LCD showing live RTX 3080 graphs: utilization, VRAM and temperature" width="300"></p>
+
 <sub>Pairs nicely with the [esp32-proxmox-panel](https://github.com/chemazener/esp32-proxmox-panel):
 move the per-machine occupancy to the touch panel and keep the USB LCD for GPU trends.</sub>
 
