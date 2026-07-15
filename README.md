@@ -26,6 +26,17 @@ A 2×4 grid of cards (auto-paginated when you have more than 8 machines), one pe
 Containers (CT) and virtual machines (VM) are colour-coded, and a header/footer show host summary and
 page indicators. Refresh every ~2 s.
 
+## GPU graphs variant (`gpu_panel.py`)
+
+A second, drop-in panel that turns the same LCD into **live GPU graphs** instead of the machine grid.
+For the NVIDIA GPU it plots **utilization %, VRAM % and temperature** over a rolling ~5-minute window
+(plus current power draw), with a footer line reporting the Intel iGPU status (detected via `lspci`;
+it shows *"in VM (passthrough)"* when the iGPU is bound to `vfio-pci`). Runs exactly like the main
+script — just point the service's `ExecStart` at `gpu_panel.py`. Refresh every ~1 s.
+
+<sub>Pairs nicely with the [esp32-proxmox-panel](https://github.com/chemazener/esp32-proxmox-panel):
+move the per-machine occupancy to the touch panel and keep the USB LCD for GPU trends.</sub>
+
 ## Interaction
 
 The panel is read-only, but you can **flick the host's mouse wheel** to change pages manually
