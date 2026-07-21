@@ -73,6 +73,28 @@ Run it as a service with the provided `lcd-panel-proxmox.service.example` (edit 
 | `LCD_BRIGHTNESS` | `80` | 0–100 |
 | `LCD_PERIOD_S` | `2.0` | refresh period (seconds) |
 | `PVE_NODE` | `pve` | Proxmox node name |
+| `MONITOR_STATE_FILE` | `/run/monitor-idle.state` | idle-state file for auto screen-off (see below) |
+
+## Auto screen-off on host inactivity
+
+Optional. `gpu_panel.py` can turn the LCD off together with the host's monitor. If the file
+`MONITOR_STATE_FILE` contains `1`, the panel calls `ScreenOff()` and stops rendering; when it goes
+back to `0` it calls `ScreenOn()` and resumes.
+
+That file is produced by the small **`monitor-idle.py`** helper included here
+(`monitor-idle.service.example`): it watches keyboard/mouse activity on the host and writes
+`0` (active) / `1` (idle after `MONITOR_IDLE_S` seconds), also blanking the host's own framebuffer.
+It even detects activity when the input device is **passed through to a VM**, by watching the device
+at the USB URB level via `usbmon` (set `MONITOR_HID_USB` to your receiver's `lsusb` id, and load the
+`usbmon` module). The same helper drives the sibling
+[esp32-proxmox-panel](https://github.com/chemazener/esp32-proxmox-panel), so both screens sleep in sync.
+
+```bash
+sudo cp monitor-idle.py /usr/local/bin/monitor-idle.py
+sudo cp monitor-idle.service.example /etc/systemd/system/monitor-idle.service   # edit envs first
+sudo apt install python3-evdev && echo usbmon | sudo tee /etc/modules-load.d/usbmon.conf
+sudo systemctl enable --now monitor-idle.service
+```
 
 ## Credits & license
 

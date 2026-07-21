@@ -215,16 +215,33 @@ def main():
     lcd.SetBrightness(int(os.environ.get("LCD_BRIGHTNESS", "80")))
 
     period = float(os.environ.get("LCD_PERIOD_S", "1.0"))
+    # Fichero de estado que publica monitor-idle.service ("1" = host inactivo).
+    # Si está, el LCD se apaga/enciende junto con el monitor del host. Opcional.
+    state_file = os.environ.get("MONITOR_STATE_FILE", "/run/monitor-idle.state")
     hist = {k: deque(maxlen=HIST) for k in ("util", "mem", "temp")}
+    screen_on = True
     while True:
         try:
-            gpu = get_gpu()
-            if not gpu["vfio"]:
-                hist["util"].append(gpu["util"])
-                hist["mem"].append(gpu["used"] * 100.0 / max(1, gpu["total"]))
-                hist["temp"].append(gpu["temp"])
-            img = render(gpu, hist)
-            lcd.DisplayPILImage(img)
+            idle = False
+            try:
+                with open(state_file) as f:
+                    idle = f.read().strip() == "1"
+            except Exception:
+                pass
+            if idle and screen_on:
+                lcd.ScreenOff()
+                screen_on = False
+            elif not idle and not screen_on:
+                lcd.ScreenOn()
+                screen_on = True
+            if screen_on:
+                gpu = get_gpu()
+                if not gpu["vfio"]:
+                    hist["util"].append(gpu["util"])
+                    hist["mem"].append(gpu["used"] * 100.0 / max(1, gpu["total"]))
+                    hist["temp"].append(gpu["temp"])
+                img = render(gpu, hist)
+                lcd.DisplayPILImage(img)
         except KeyboardInterrupt:
             break
         except Exception as e:
